@@ -29,14 +29,10 @@ namespace RestaurantReservation.Db.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(int id, T entity)
+        public async Task UpdateAsync(T entity)
         {
-            var existing = await _dbSet.FindAsync(id);
-            if (existing != null)
-            {
-                _context.Entry(existing).CurrentValues.SetValues(entity);
-                await _context.SaveChangesAsync();
-            }
+            _dbSet.Update(entity);       
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(int id)

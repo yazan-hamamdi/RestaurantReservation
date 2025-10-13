@@ -1,9 +1,9 @@
-﻿namespace RestaurantReservation.Db.Interfaces
+﻿namespace RestaurantReservation.Domain.IServices
 {
-    public interface IBaseRepository<T> where T : class
+    public interface IBaseService<T> where T : class
     {
-        Task<T> GetByIdAsync(int id);
         Task<List<T>> GetAllAsync();
+        Task<T?> GetByIdAsync(int id);
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
