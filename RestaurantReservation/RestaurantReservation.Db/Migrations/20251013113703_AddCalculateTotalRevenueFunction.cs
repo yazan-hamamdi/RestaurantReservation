@@ -11,7 +11,7 @@ namespace RestaurantReservation.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-            CREATE FUNCTION dbo.CalculateTotalRevenue(@RestaurantId INT)
+            CREATE OR ALTER FUNCTION CalculateTotalRevenue(@RestaurantId INT)
             RETURNS DECIMAL(18,2)
             AS
             BEGIN
@@ -29,7 +29,7 @@ namespace RestaurantReservation.Db.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("DROP FUNCTION dbo.CalculateTotalRevenue");
+            migrationBuilder.Sql("DROP FUNCTION CalculateTotalRevenue");
         }
     }
 }

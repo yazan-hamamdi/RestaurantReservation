@@ -10,7 +10,7 @@ namespace RestaurantReservation.Db.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-            CREATE PROCEDURE GetCustomersByPartySize
+            CREATE OR ALTER PROCEDURE GetCustomersByPartySize
                 @MinPartySize INT
             AS
             BEGIN
