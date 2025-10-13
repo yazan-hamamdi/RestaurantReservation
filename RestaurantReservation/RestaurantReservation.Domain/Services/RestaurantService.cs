@@ -6,17 +6,23 @@ namespace RestaurantReservation.Domain.Services
 {
     public class RestaurantService : IRestaurantService
     {
-        private readonly IRestaurantRepository _repository;
+        private readonly IRestaurantRepository _restaurantRepository;
 
         public RestaurantService(IRestaurantRepository repository)
         {
-            _repository = repository;
+            _restaurantRepository = repository;
         }
 
-        public async Task<List<Restaurant>> GetAllAsync() => await _repository.GetAllAsync();
-        public async Task<Restaurant?> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
-        public async Task AddAsync(Restaurant restaurant) => await _repository.AddAsync(restaurant);
-        public async Task UpdateAsync(Restaurant restaurant) => await _repository.UpdateAsync(restaurant);
-        public async Task DeleteAsync(int id) => await _repository.DeleteAsync(id);
+        public async Task<List<Restaurant>> GetAllAsync() => await _restaurantRepository.GetAllAsync();
+        public async Task<Restaurant?> GetByIdAsync(int id) => await _restaurantRepository.GetByIdAsync(id);
+        public async Task AddAsync(Restaurant restaurant) => await _restaurantRepository.AddAsync(restaurant);
+        public async Task UpdateAsync(Restaurant restaurant) => await _restaurantRepository.UpdateAsync(restaurant);
+        public async Task DeleteAsync(int id) => await _restaurantRepository.DeleteAsync(id);
+
+        public async Task<decimal> CalculateTotalRevenueAsync(int restaurantId)
+        {
+            return await _restaurantRepository.CalculateTotalRevenueAsync(restaurantId);
+        }
+
     }
 }

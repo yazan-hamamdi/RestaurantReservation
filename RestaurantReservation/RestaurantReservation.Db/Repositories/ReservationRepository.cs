@@ -7,5 +7,4 @@ namespace RestaurantReservation.Db.Repositories
     {
         public ReservationRepository(RestaurantReservationDbContext context) : base(context) { }
     }
-
 }
