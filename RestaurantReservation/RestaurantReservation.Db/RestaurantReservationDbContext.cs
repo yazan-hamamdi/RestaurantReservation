@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RestaurantReservation.Db.DataModels;
+using RestaurantReservation.Db.ViewDTOs;
 
 namespace RestaurantReservation.Db
 {
@@ -17,6 +18,8 @@ namespace RestaurantReservation.Db
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Table> Tables { get; set; }
+        public DbSet<ReservationView> ReservationViews { get; set; }
+        public DbSet<EmployeeView> EmployeeViews { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -153,6 +156,18 @@ namespace RestaurantReservation.Db
                 new OrderItem { OrderItemId = 4, OrderId = 4, ItemId = 4, Quantity = 5 },
                 new OrderItem { OrderItemId = 5, OrderId = 5, ItemId = 5, Quantity = 1 }
             );
+
+            modelBuilder
+              .Entity<ReservationView>()
+              .HasNoKey() 
+              .ToView("vw_ReservationsWithCustomerRestaurant"
+            );
+
+            modelBuilder
+              .Entity<EmployeeView>()
+              .HasNoKey() 
+              .ToView("vw_EmployeesWithRestaurant"
+           );
         }
     }
 }

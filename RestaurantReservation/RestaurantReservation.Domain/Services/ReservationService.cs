@@ -2,6 +2,7 @@
 using RestaurantReservation.Db;
 using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
+using RestaurantReservation.Db.ViewDTOs;
 using RestaurantReservation.Domain.IServices;
 
 namespace RestaurantReservation.Domain.Services
@@ -27,6 +28,12 @@ namespace RestaurantReservation.Domain.Services
         {
             return await _context.Reservations
                 .Where(r => r.CustomerId == customerId)
+                .ToListAsync();
+        }
+
+        public async Task<List<ReservationView>> GetReservationsWithCustomerRestaurantAsync()
+        {
+            return await _context.ReservationViews
                 .ToListAsync();
         }
     }

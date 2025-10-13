@@ -3,6 +3,7 @@ using RestaurantReservation.Db;
 using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Db.Repositories;
+using RestaurantReservation.Db.ViewDTOs;
 using RestaurantReservation.Domain.IServices;
 
 namespace RestaurantReservation.Domain.Services
@@ -30,6 +31,13 @@ namespace RestaurantReservation.Domain.Services
 
             return await _context.Employees
                 .Where(e => e.Position == managerRole)
+                .ToListAsync();
+        }
+
+        public async Task<List<EmployeeView>> GetEmployeesWithRestaurantAsync()
+        {
+            return await _context.EmployeeViews
+                .OrderBy(e => e.LastName)
                 .ToListAsync();
         }
     }
