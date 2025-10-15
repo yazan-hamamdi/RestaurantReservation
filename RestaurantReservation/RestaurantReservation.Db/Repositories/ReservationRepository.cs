@@ -14,21 +14,6 @@ namespace RestaurantReservation.Db.Repositories
             _context = context;
         }
 
-        public async Task<bool> CustomerExistsAsync(int customerId)
-        {
-            return await _context.Customers.AnyAsync(c => c.CustomerId == customerId);
-        }
-
-        public async Task<bool> RestaurantExistsAsync(int restaurantId)
-        {
-            return await _context.Restaurants.AnyAsync(r => r.RestaurantId == restaurantId);
-        }
-
-        public async Task<bool> TableExistsAsync(int tableId)
-        {
-            return await _context.Tables.AnyAsync(t => t.TableId == tableId);
-        }
-
         public async Task<List<Reservation>> GetReservationsByCustomerAsync(int customerId)
         {
             return await _context.Reservations
