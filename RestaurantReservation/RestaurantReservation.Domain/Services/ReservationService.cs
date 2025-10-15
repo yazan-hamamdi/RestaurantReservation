@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantReservation.Db;
-using RestaurantReservation.Db.DataModels;
+﻿using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Db.ViewDTOs;
 using RestaurantReservation.Domain.Exceptions;
@@ -11,12 +9,10 @@ namespace RestaurantReservation.Domain.Services
     public class ReservationService : IReservationService
     {
         private readonly IReservationRepository _reservationRepository;
-        private readonly RestaurantReservationDbContext _context;
 
-        public ReservationService(IReservationRepository repository, RestaurantReservationDbContext context)
+        public ReservationService(IReservationRepository repository)
         {
             _reservationRepository = repository;
-            _context = context;
         }
 
         public async Task<List<Reservation>> GetAllAsync() =>
@@ -36,16 +32,13 @@ namespace RestaurantReservation.Domain.Services
             if (reservation == null)
                 throw new ArgumentNullException(nameof(reservation));
 
-            var customerExists = await _context.Customers.AnyAsync(c => c.CustomerId == reservation.CustomerId);
-            if (!customerExists)
+            if (!await _reservationRepository.CustomerExistsAsync(reservation.CustomerId))
                 throw new EntityNotFoundException($"Customer with ID {reservation.CustomerId} not found");
 
-            var restaurantExists = await _context.Restaurants.AnyAsync(r => r.RestaurantId == reservation.RestaurantId);
-            if (!restaurantExists)
+            if (!await _reservationRepository.RestaurantExistsAsync(reservation.RestaurantId))
                 throw new EntityNotFoundException($"Restaurant with ID {reservation.RestaurantId} not found");
 
-            var tableExists = await _context.Tables.AnyAsync(t => t.TableId == reservation.TableId);
-            if (!tableExists)
+            if (!await _reservationRepository.TableExistsAsync(reservation.TableId))
                 throw new EntityNotFoundException($"Table with ID {reservation.TableId} not found");
 
             await _reservationRepository.AddAsync(reservation);
@@ -74,20 +67,15 @@ namespace RestaurantReservation.Domain.Services
 
         public async Task<List<Reservation>> GetReservationsByCustomerAsync(int customerId)
         {
-            var customerExists = await _context.Customers.AnyAsync(c => c.CustomerId == customerId);
-            if (!customerExists)
+            if (!await _reservationRepository.CustomerExistsAsync(customerId))
                 throw new EntityNotFoundException($"Customer with ID {customerId} not found");
 
-            return await _context.Reservations
-                .Where(r => r.CustomerId == customerId)
-                .ToListAsync();
+            return await _reservationRepository.GetReservationsByCustomerAsync(customerId);
         }
 
         public async Task<List<ReservationView>> GetReservationsWithCustomerRestaurantAsync()
         {
-            return await _context.ReservationViews
-                .OrderBy(r => r.ReservationDate)
-                .ToListAsync();
+            return await _reservationRepository.GetReservationsWithCustomerRestaurantAsync();
         }
     }
 }

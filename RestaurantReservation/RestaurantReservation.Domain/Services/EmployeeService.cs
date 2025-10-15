@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantReservation.Db;
-using RestaurantReservation.Db.DataModels;
+﻿using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Db.ViewDTOs;
 using RestaurantReservation.Domain.Exceptions;
@@ -11,12 +9,10 @@ namespace RestaurantReservation.Domain.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository _employeeRepository;
-        private readonly RestaurantReservationDbContext _context;
 
-        public EmployeeService(IEmployeeRepository employeeRepository, RestaurantReservationDbContext context)
+        public EmployeeService(IEmployeeRepository employeeRepository)
         {
             _employeeRepository = employeeRepository;
-            _context = context;
         }
 
         public async Task<List<Employee>> GetAllAsync() =>
@@ -62,18 +58,12 @@ namespace RestaurantReservation.Domain.Services
 
         public async Task<List<Employee>> ListManagersAsync()
         {
-            const string ManagerRole = "Manager";
-
-            return await _context.Employees
-                .Where(e => e.Position == ManagerRole)
-                .ToListAsync();
+            return await _employeeRepository.ListManagersAsync();
         }
 
         public async Task<List<EmployeeView>> GetEmployeesWithRestaurantAsync()
         {
-            return await _context.EmployeeViews
-                .OrderBy(e => e.LastName)
-                .ToListAsync();
+            return await _employeeRepository.GetEmployeesWithRestaurantAsync();
         }
     }
 }

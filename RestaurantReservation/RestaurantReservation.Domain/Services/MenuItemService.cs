@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantReservation.Db;
-using RestaurantReservation.Db.DataModels;
+﻿using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Domain.Exceptions;
 using RestaurantReservation.Domain.IServices;
@@ -10,12 +8,10 @@ namespace RestaurantReservation.Domain.Services
     public class MenuItemService : IMenuItemService
     {
         private readonly IMenuItemRepository _menuItemRepository;
-        private readonly RestaurantReservationDbContext _context;
 
-        public MenuItemService(IMenuItemRepository repository, RestaurantReservationDbContext context)
+        public MenuItemService(IMenuItemRepository repository)
         {
             _menuItemRepository = repository;
-            _context = context;
         }
 
         public async Task<List<MenuItem>> GetAllAsync() =>
@@ -61,18 +57,7 @@ namespace RestaurantReservation.Domain.Services
 
         public async Task<List<MenuItem>> ListOrderedMenuItemsAsync(int reservationId)
         {
-            var reservationExists = await _context.Reservations.AnyAsync(r => r.ReservationId == reservationId);
-            if (!reservationExists)
-                throw new EntityNotFoundException($"Reservation with ID {reservationId} not found");
-
-            var menuItems = await _context.OrderItems
-                .Where(oi => oi.Order.ReservationId == reservationId)
-                .Include(oi => oi.MenuItem)
-                .Select(oi => oi.MenuItem)
-                .Distinct()
-                .ToListAsync();
-
-            return menuItems;
+            return await _menuItemRepository.ListOrderedMenuItemsAsync(reservationId);
         }
     }
 }
