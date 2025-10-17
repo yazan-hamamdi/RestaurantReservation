@@ -212,7 +212,7 @@ namespace RestaurantReservation.Db.Migrations
                 table: "OrderItems",
                 column: "ItemId");
 
-            migrationBuilder.CreateIndex(
+            migrationBuilder.CreateIndex( 
                 name: "IX_OrderItems_OrderId",
                 table: "OrderItems",
                 column: "OrderId");

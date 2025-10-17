@@ -16,9 +16,6 @@ namespace RestaurantReservation.Db.Repositories
 
         public async Task<List<MenuItem>> ListOrderedMenuItemsAsync(int reservationId)
         {
-            var reservationExists = await _context.Reservations
-                .AnyAsync(r => r.ReservationId == reservationId);
-
             var menuItems = await _context.OrderItems
                 .Where(oi => oi.Order.ReservationId == reservationId)
                 .Include(oi => oi.MenuItem)
