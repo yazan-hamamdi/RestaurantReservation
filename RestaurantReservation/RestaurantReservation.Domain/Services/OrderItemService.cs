@@ -35,13 +35,10 @@ namespace RestaurantReservation.Domain.Services
             if (orderItem == null)
                 throw new ArgumentNullException(nameof(orderItem));
 
-            var orderExists = await _context.Orders.AnyAsync(o => o.OrderId == orderItem.OrderId);
-
-            if (!orderExists)
+            if (!await _orderItemRepository.OrderExistsAsync(orderItem.OrderId))
                 throw new EntityNotFoundException($"Order with ID {orderItem.OrderId} not found");
 
-            var menuItemExists = await _context.MenuItems.AnyAsync(m => m.MenuItemId == orderItem.ItemId);
-            if (!menuItemExists)
+            if (!await _orderItemRepository.MenuItemExistsAsync(orderItem.ItemId))
                 throw new EntityNotFoundException($"Menu item with ID {orderItem.ItemId} not found");
 
             await _orderItemRepository.AddAsync(orderItem);

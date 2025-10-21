@@ -19,5 +19,9 @@ namespace RestaurantReservation.Db.Repositories
                 .FromSqlRaw("EXEC GetCustomersByPartySize @MinPartySize={0}", minPartySize)
                 .ToListAsync();
         }
+        public async Task<bool> CustomerExistsAsync(int customerId)
+        {
+            return await _context.Customers.AnyAsync(c => c.CustomerId == customerId);
+        }
     }
 }

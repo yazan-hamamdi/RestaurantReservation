@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using RestaurantReservation.Db;
-using RestaurantReservation.Db.DataModels;
+﻿using RestaurantReservation.Db.DataModels;
 using RestaurantReservation.Db.Interfaces;
 using RestaurantReservation.Domain.Exceptions;
 using RestaurantReservation.Domain.IServices;
@@ -10,12 +8,10 @@ namespace RestaurantReservation.Domain.Services
     public class RestaurantService : IRestaurantService
     {
         private readonly IRestaurantRepository _restaurantRepository;
-        private readonly RestaurantReservationDbContext _context;
 
-        public RestaurantService(IRestaurantRepository repository, RestaurantReservationDbContext context)
+        public RestaurantService(IRestaurantRepository repository)
         {
             _restaurantRepository = repository;
-            _context = context;
         }
 
         public async Task<List<Restaurant>> GetAllAsync() =>
@@ -61,10 +57,6 @@ namespace RestaurantReservation.Domain.Services
 
         public async Task<decimal> CalculateTotalRevenueAsync(int restaurantId)
         {
-            var exists = await _context.Restaurants.AnyAsync(r => r.RestaurantId == restaurantId);
-            if (!exists)
-                throw new EntityNotFoundException($"Restaurant with ID {restaurantId} not found.");
-
             var total = await _restaurantRepository.CalculateTotalRevenueAsync(restaurantId);
             return total;
         }
