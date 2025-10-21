@@ -33,11 +33,33 @@ namespace RestaurantReservation.Db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>()
-                .HasOne(e => e.Restaurant)
-                .WithMany(r => r.Employees)
-                .HasForeignKey(e => e.RestaurantId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.Property(c => c.FirstName).HasMaxLength(50).IsRequired();
+                entity.Property(c => c.LastName).HasMaxLength(50).IsRequired();
+                entity.Property(c => c.Email).HasMaxLength(100).IsRequired();
+                entity.Property(c => c.PhoneNumber).HasMaxLength(20).IsRequired();
+            });
+
+            modelBuilder.Entity<Restaurant>(entity =>
+            {
+                entity.Property(r => r.Name).HasMaxLength(100).IsRequired();
+                entity.Property(r => r.Address).HasMaxLength(200).IsRequired();
+                entity.Property(r => r.PhoneNumber).HasMaxLength(20).IsRequired();
+                entity.Property(r => r.OpeningHours).HasMaxLength(50).IsRequired();
+            });
+
+            modelBuilder.Entity<Employee>(entity =>
+            {
+                entity.Property(e => e.FirstName).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.LastName).HasMaxLength(50).IsRequired();
+                entity.Property(e => e.Position).HasMaxLength(50).IsRequired();
+
+                entity.HasOne(e => e.Restaurant)
+                      .WithMany(r => r.Employees)
+                      .HasForeignKey(e => e.RestaurantId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            });
 
             modelBuilder.Entity<Table>()
                 .HasOne(t => t.Restaurant)
@@ -92,6 +114,18 @@ namespace RestaurantReservation.Db
                 .WithMany(m => m.OrderItems)
                 .HasForeignKey(oi => oi.ItemId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+             .Entity<ReservationView>()
+             .HasNoKey()
+             .ToView("vw_ReservationsWithCustomerRestaurant"
+           );
+
+            modelBuilder
+              .Entity<EmployeeView>()
+              .HasNoKey()
+              .ToView("vw_EmployeesWithRestaurant"
+           );
 
             modelBuilder.Entity<Restaurant>().HasData(
                  new Restaurant { RestaurantId = 1, Name = "The Italian Place", Address = "123 Main St, NY", PhoneNumber = "212-555-0101", OpeningHours = "10:00 - 22:00" },
@@ -156,18 +190,6 @@ namespace RestaurantReservation.Db
                 new OrderItem { OrderItemId = 4, OrderId = 4, ItemId = 4, Quantity = 5 },
                 new OrderItem { OrderItemId = 5, OrderId = 5, ItemId = 5, Quantity = 1 }
             );
-
-            modelBuilder
-              .Entity<ReservationView>()
-              .HasNoKey() 
-              .ToView("vw_ReservationsWithCustomerRestaurant"
-            );
-
-            modelBuilder
-              .Entity<EmployeeView>()
-              .HasNoKey() 
-              .ToView("vw_EmployeesWithRestaurant"
-           );
         }
     }
 }
